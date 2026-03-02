@@ -1,0 +1,85 @@
+{
+  "feature_types": {
+    "depth_delta": "normal",
+    "center_distance": "beta",
+    "cos_similarity": "gmm",
+    "growth_diff": "normal",
+    "bbox_area_ratio": "normal",
+    "bbox_aspect_ratio": "t"
+  },
+  "distributions": {
+    "depth_delta": {
+      "type": "normal",
+      "params": {
+        "mean": 0.001681239752232328,
+        "std": 0.4790884992970364
+      }
+    },
+    "center_distance": {
+      "type": "beta",
+      "params": {
+        "a": 2.615727981542334,
+        "b": 5.676602626375165,
+        "loc": -0.006220994873345505,
+        "scale": 1.0172017677278173
+      },
+      "normalization": {
+        "min": 1.118033988749895,
+        "max": 1196.4149638085441
+      }
+    },
+    "cos_similarity": {
+      "type": "gmm",
+      "n_components": 3,
+      "weights": [
+        0.48209228260776193,
+        0.17519101575507115,
+        0.34271670163716683
+      ],
+      "means": [
+        0.08693430621089755,
+        0.8136967402795804,
+        0.3566063356101028
+      ],
+      "covariances": [
+        0.01027508157993087,
+        0.009741845712913493,
+        0.013983502732657024
+      ]
+    },
+    "growth_diff": {
+      "type": "normal",
+      "params": {
+        "mean": 0.04743262335761469,
+        "std": 0.13582299069397571
+      }
+    },
+    "bbox_area_ratio": {
+      "type": "normal",
+      "params": {
+        "mean": 1.2774602073481787,
+        "std": 1.2457658748878022
+      }
+    },
+    "bbox_aspect_ratio": {
+      "type": "t",
+      "params": {
+        "df": 3.6380420150686654,
+        "loc": 1.001143395817727,
+        "scale": 0.12944588231610432
+      }
+    }
+  },
+  "metadata": {
+    "n_features": 6,
+    "feature_names": [
+      "depth_delta",
+      "center_distance",
+      "cos_similarity",
+      "growth_diff",
+      "bbox_area_ratio",
+      "bbox_aspect_ratio"
+    ],
+    "version": "1.0"
+  }
+}

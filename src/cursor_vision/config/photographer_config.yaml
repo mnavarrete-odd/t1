@@ -1,0 +1,91 @@
+# ===========================================================================
+# CursorVision - Photographer Configuration
+# ===========================================================================
+# Parameters for the CounterVision Photographer (keyframe selection engine).
+# Refer to core/photographer/config.py for full documentation.
+# ===========================================================================
+
+# Classes recognised as work-area containers
+area_classes:
+  - area_de_trabajo_carro
+  - area_de_trabajo_pallet
+
+# Classes recognised as boxes / products
+box_classes:
+  - cajas
+  - folio
+  - manga
+  - saco
+  - producto
+
+# Classes recognised as persons
+person_classes:
+  - persona
+
+# Classes recognised as hands
+hand_classes:
+  - mano
+
+# Classes that signal "empty area"
+empty_classes: []
+
+# -----------------------------------------------------------------------
+# Area selector
+# -----------------------------------------------------------------------
+area_min_conf: 0.1
+area_warmup_frames: 10
+area_stable_frames: 1
+area_hold_frames: 30
+area_expand_ratio: 0.2
+area_refit_enabled: true
+area_refit_frames: 12
+area_refit_center_dist_min_px: 10.0
+area_refit_center_dist_max_px: 30.0
+
+# -----------------------------------------------------------------------
+# Keyframe triggers
+# -----------------------------------------------------------------------
+capture_all: false
+clear_events: true
+
+# Person/hand proximity
+person_dist_px: 5.0
+person_near_enabled: true
+hand_dist_px: 500.0
+
+# Stable-area keyframe
+stable_area_frames: 5
+stable_area_movement_max: 0.01
+stable_area_require_count_stability: true
+movement_by_area: false
+
+# Stable reconfirm
+stable_reconfirm_frames: 5
+
+# Area-empty keyframe
+stable_empty_frames: 5
+
+# Occlusion keyframe
+occlusion_start_ratio: 0.2
+occlusion_end_ratio: 0.1
+occlusion_start_frames: 2
+occlusion_end_frames: 2
+occlusion_pre_offset_frames: 0
+occlusion_post_offset_frames: 0
+occlusion_item_classes:
+  - producto
+  - cajas
+  - folio
+  - manga
+  - saco
+occlusion_change_count_min: 1
+occlusion_change_coverage_min: 0.05
+occlusion_change_confirm_frames: 2
+occlusion_change_cooldown_frames: 10
+
+# Product-in-hand keyframe
+product_start_frames: 1
+product_end_frames: 1
+product_pre_offset_frames: 0
+product_post_offset_frames: 0
+product_save_prepost: true

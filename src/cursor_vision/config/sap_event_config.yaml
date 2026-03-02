@@ -1,0 +1,25 @@
+# ===========================================================================
+# CursorVision - SAP Event Node Configuration
+# ===========================================================================
+# HTTP server that receives SAP events and publishes them as ROS messages.
+#
+# Test with curl:
+#   curl -X POST http://localhost:1616/api/sap-info \
+#     -H "Content-Type: application/json" \
+#     -d '{"action":"item_start","order_id":"ORD-001","hu_id":"HU-A","sku":"SKU-X","quantity":5}'
+# ===========================================================================
+
+server:
+  host: "0.0.0.0"
+  port: 1616
+
+auth:
+  enabled: false
+  api_key: ""
+  username: ""
+  password: ""
+
+api:
+  endpoint: "/api/sap-info"
+  timeout: 30
+  max_request_size: 10485760

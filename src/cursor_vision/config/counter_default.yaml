@@ -1,0 +1,242 @@
+# ==========================================
+# Counter config (tracking + counting)
+# ==========================================
+# Este archivo controla la logica "fina" del pipeline counter.
+# settings_counter.py controla rutas/runtime generales.
+
+classes:
+  # Lista de clases que se consideran contables.
+  # Se normalizan nombres (singular/plural, guion/underscore).
+  allowed_names:
+    - cajas
+    - folio
+    - manga
+    - saco
+    - producto
+
+embedder:
+  # Tipo de embedding visual:
+  # dino = semantico (mas robusto, mas pesado)
+  # hist = histograma HSV (mas liviano, menos robusto)
+  type: dino
+
+  # Ruta al modelo del embedder (relativa a este YAML o absoluta).
+  model_dir: ../models/dino
+
+  # Batch para inferencia del embedder.
+  batch_size: 32
+
+features:
+  # Radio (pixeles) del parche usado para estimar depth_center.
+  depth_patch_radius: 2
+
+  # Escala depth crudo -> metros (ej: 0.001 si depth viene en mm).
+  depth_scale: 0.001
+
+workarea:
+  # Habilita filtro por area de trabajo usando depth + bbox de area.
+  enabled: true
+
+  # Max depth (mm) para considerar un pixel valido en mascara de area.
+  max_depth_mm: 2800.0
+
+  # Umbral de cobertura de mascara para aceptar una deteccion comun.
+  bbox_mask_threshold: 0.40
+
+  # Umbral especial para bbox de clase area.
+  area_bbox_mask_threshold: 0.20
+
+  # Escala para convertir depth a mm dentro de workarea mask.
+  depth_scale_to_mm: 1.0
+
+  # Downsample para computar mascara de area mas rapido.
+  downsample_scale: 4
+
+  # Resolucion (mm) de la grilla XY para componentes conectados.
+  grid_resolution_mm: 50.0
+
+  # Tolerancia (px) al buscar componente conectado central.
+  center_tolerance_px: 2
+
+  intrinsics:
+    # Intrinsecos de camara para proyeccion 3D.
+    fx: 1125.636
+    fy: 1125.133
+    cx: 952.45
+    cy: 550.62
+
+containment:
+  # Habilita supresion de detecciones contenidas por otras.
+  enabled: true
+
+  # IOA minimo para considerar "A esta contenido en B".
+  ioa_threshold: 0.70
+
+  # Reglas manuales opcionales por clase.
+  # Formato esperado: {contained_class_id: [container_class_id, factor]}
+  rules: {}
+
+depth_topdown:
+  # Escala depth para modulo topdown (depth crudo -> metros).
+  depth_scale: 0.001
+
+  # Profundidad maxima en metros para analisis topdown.
+  max_depth_m: 3.0
+
+  # Resolucion (cm) del mapa topdown.
+  resolution_cm: 1.0
+
+  # Hiperparametros de estimacion rough por histograma.
+  histogram_bins: 300
+  histogram_top_n: 10
+
+  # Reduccion de region para evitar bordes ruidosos del bbox.
+  inset_ratio: 0.5
+  center_crop_ratio: 0.5
+
+cost:
+  # True: usa modelo bayesiano con distribuciones calibradas.
+  # False: usa costo heuristico.
+  use_bayes: true
+
+  # Archivos de distribuciones para modo bayes (relativos a este YAML).
+  correct_distributions_path: correct_distributions.json
+  incorrect_distributions_path: incorrect_distributions.json
+
+  # Prior de match correcto (P(match)).
+  prob_correct_prior: 0.01811192458792822
+
+  # Si true, prohibe match entre clases distintas.
+  hard_class_mismatch: false
+
+  # Penalizacion extra por mismatch de clase (si no es hard mismatch).
+  class_mismatch_penalty: 0.0
+
+  # Costo "infinito" para pares invalidos.
+  large_cost: 100000000.0
+
+  # Epsilon numerico para estabilidad.
+  eps: 1.0e-10
+
+  # Descuento opcional por profundidad para clases especificas.
+  enable_depth_discount_by_class: false
+  depth_discount_class_ids: []
+  depth_discount_factor: 3.0
+
+  # Pesos del costo heuristico.
+  w_cosine: 0.55
+  w_center: 0.20
+  w_height_depth: 0.20
+  w_aspect: 0.05
+
+  # Gates heuristicas.
+  center_same_norm: 0.08
+  max_center_dist_norm: 0.55
+  max_aspect_ratio_rel_diff: 0.25
+  max_height_depth_rel_diff: 0.35
+  max_cosine_distance: 0.35
+  max_move_cosine_distance: 0.25
+
+tracking:
+  # Cuantos frames puede faltar un track antes de darse por perdido.
+  max_misses: 3
+
+  # Umbral principal de costo para aceptar match.
+  match_threshold: 1.5
+
+  # Si true, resetea tracks cuando no hay productos detectados.
+  reset_on_no_products: false
+
+  # Segundo pase greedy para recuperar matches no tomados en Hungarian.
+  second_pass_greedy: true
+  greedy_match_threshold: 1.9
+
+  # Reglas de containment para suprimir "new" internos.
+  contained_by_rules: {}
+  contained_ioa_threshold: 0.1
+  contained_depth_delta_threshold: 0.02
+
+counting:
+  # Habilita conteo por cambios de estado (new/lost).
+  enabled: true
+
+  # En primer frame ignora "new" bootstrap para no sumar inventario base.
+  ignore_bootstrap_new_on_first_frame: true
+
+  # True: estima unidades usando depth_delta y altura por clase.
+  use_depth_for_units: true
+
+  # Clases apilables (ids). [] => todas.
+  stackable_class_ids: []
+
+  # Altura por defecto de una unidad (m) si clase no tiene override.
+  default_height_m: 0.20
+
+  # Override por clase: {"class_id": height_m}
+  class_heights_m: {}
+
+  # Umbral para considerar clase "alta" y usar regla de redondeo distinta.
+  tall_height_threshold_m: 0.14
+  round_up_threshold_tall: 0.50
+  round_up_threshold_short: 0.60
+
+  # Min depth_delta para considerar altura valida.
+  min_depth_delta_m: 0.01
+
+  # Si true, exige depth_delta positivo para sumar unidades.
+  require_positive_depth_delta: true
+
+  # Clamp final de unidades por deteccion.
+  min_units_per_detection: 1
+  max_units_per_detection: 6
+
+  # Factor multiplicativo por clase: {"class_id": factor}
+  class_factors: {}
+
+  # Si true, permite derivar factores desde reglas de containment.
+  use_containment_factors: false
+
+  # Overrides opcionales de reglas/factores.
+  # contained_by_rules: {contained: [container, factor]}
+  # contains_rules: {container: [contained, factor]}
+  contained_by_rules: {}
+  contains_rules: {}
+
+  # Epsilon para comparaciones de estado de conteo.
+  state_eps: 1.0e-6
+
+output:
+  # Genera video final de tracking.
+  save_video: true
+
+  # FPS del video final.
+  video_fps: 4
+
+  # Opcional: guardar visualizacion depth por frame.
+  save_depth_vis: true
+
+  # Opcional: colormap para depth_vis (ej: turbo, viridis, magma).
+  depth_vis_colormap: turbo
+
+  # True: dibuja barra vertical de profundidad al costado derecho.
+  depth_vis_show_colorbar: true
+
+  # Cantidad de marcas numericas (ticks) en la barra.
+  depth_vis_colorbar_ticks: 5
+
+  # True: agrega "range=lo-hi" al texto de estadisticos.
+  depth_vis_show_range: false
+
+  # Modo de rango para normalizar depth_vis:
+  # - run_global: un solo rango para toda la corrida (recomendado para consistencia)
+  # - per_frame: rango por frame (puede variar visualmente)
+  # - fixed: usa depth_vis_fixed_lo_m/depth_vis_fixed_hi_m
+  depth_vis_range_mode: run_global
+
+  # Percentiles usados para calcular el rango automatico.
+  depth_vis_percentile_lo: 2.0
+  depth_vis_percentile_hi: 98.0
+
+  # Rango fijo en metros (solo cuando depth_vis_range_mode=fixed).
+  depth_vis_fixed_lo_m: 0.20
+  depth_vis_fixed_hi_m: 3.00

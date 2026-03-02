@@ -1,0 +1,13 @@
+builtin_interfaces/Time stamp
+string camera_name
+int32 frame_index
+float64 running_units
+float64 added_units
+float64 removed_units
+float64 net_units
+string change_state
+int32 num_active_tracks
+int32 num_detections
+int32 num_matched
+int32 num_new
+int32 num_lost_tracks

@@ -1,0 +1,84 @@
+{
+  "feature_types": {
+    "depth_delta": "t",
+    "center_distance": "beta",
+    "cos_similarity": "beta",
+    "growth_diff": "t",
+    "bbox_area_ratio": "t",
+    "bbox_aspect_ratio": "t"
+  },
+  "distributions": {
+    "depth_delta": {
+      "type": "t",
+      "params": {
+        "df": 1.2078956269702332,
+        "loc": -9.474814355463858e-05,
+        "scale": 0.002353496981445786
+      }
+    },
+    "center_distance": {
+      "type": "beta",
+      "params": {
+        "a": 0.52129376513226,
+        "b": 337.76546850378344,
+        "loc": -1.7444568878898336e-20,
+        "scale": 5.197050136327865
+      },
+      "normalization": {
+        "min": 0.0,
+        "max": 700.6832379898923
+      }
+    },
+    "cos_similarity": {
+      "type": "beta",
+      "params": {
+        "a": 3179192.936734626,
+        "b": 1.1697980421601302,
+        "loc": -156254.39396224948,
+        "scale": 156255.392777442,
+        "cutoff": 0.985,
+        "cutoff_value": 13.361465740492756
+      },
+      "normalization": {
+        "min": 0,
+        "max": 1
+      }
+    },
+    "growth_diff": {
+      "type": "t",
+      "params": {
+        "df": 0.5309374242446164,
+        "loc": -1.0746282314025806e-06,
+        "scale": 0.0014942896896280198
+      }
+    },
+    "bbox_area_ratio": {
+      "type": "t",
+      "params": {
+        "df": 2.0821797569166556,
+        "loc": 1.0007841319369957,
+        "scale": 0.02350883453980047
+      }
+    },
+    "bbox_aspect_ratio": {
+      "type": "t",
+      "params": {
+        "df": 2.7611202817376563,
+        "loc": 0.9997828864835554,
+        "scale": 0.02126032051818462
+      }
+    }
+  },
+  "metadata": {
+    "n_features": 6,
+    "feature_names": [
+      "depth_delta",
+      "center_distance",
+      "cos_similarity",
+      "growth_diff",
+      "bbox_area_ratio",
+      "bbox_aspect_ratio"
+    ],
+    "version": "1.0"
+  }
+}
